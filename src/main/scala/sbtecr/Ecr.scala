@@ -1,9 +1,13 @@
 package sbtecr
 
+import java.util.Base64
+
 import com.amazonaws.regions.Region
 import com.amazonaws.services.ecr.AmazonECRClient
 import com.amazonaws.services.ecr.model._
 import sbt.Logger
+
+import scala.collection.JavaConverters._
 
 object Ecr extends Aws {
 
@@ -18,6 +22,25 @@ object Ecr extends Aws {
       case e: RepositoryAlreadyExistsException =>
         logger.info(s"Repository exists: ${region}/${repositoryName}")
     }
+  }
+
+  def dockerCredentials(region: Region)(implicit logger: Logger): (String, String) = {
+    val request = new GetAuthorizationTokenRequest()
+    val response = ecr(region).getAuthorizationToken(request)
+
+    response
+      .getAuthorizationData
+      .asScala
+      .map(_.getAuthorizationToken)
+      .map(Base64.getDecoder.decode(_))
+      .map(new String(_, "UTF-8"))
+      .map(_.split(":"))
+      .headOption match {
+        case Some(creds) if creds.size == 2 =>
+          (creds(0), creds(1))
+        case _ =>
+          throw new IllegalStateException("Authorization token not found.")
+      }
   }
 
   private def ecr(region: Region) = client(classOf[AmazonECRClient], region)
