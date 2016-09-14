@@ -2,3 +2,4 @@
 > show ecr:accountId
 > show ecr:region
 > show ecr:repositoryName
+> show ecr:localDockerImage
