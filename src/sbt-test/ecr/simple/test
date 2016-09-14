@@ -1,0 +1,4 @@
+# ECR settings must be handled properly
+> show ecr:accountId
+> show ecr:region
+> show ecr:repositoryName
