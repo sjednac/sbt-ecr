@@ -20,7 +20,6 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
 
     import com.amazonaws.regions.{Region, Regions}
 
-    accountId        in ecr := "<aws-account-id>"
     region           in ecr := Region.getRegion(Regions.US_EAST_1)
     repositoryName   in ecr := (packageName in Docker).value
     localDockerImage in ecr := (packageName in Docker).value + ":" + (version in Docker).value

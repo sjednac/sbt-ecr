@@ -11,7 +11,6 @@ object EcrPlugin extends AutoPlugin {
   object autoImport {
       lazy val ecr = config("ecr")
 
-      lazy val accountId        = settingKey[String]("Amazon account ID.")
       lazy val region           = settingKey[Region]("Amazon EC2 region.")
       lazy val repositoryName   = settingKey[String]("Amazon ECR repository name.")
       lazy val localDockerImage = settingKey[String]("Local Docker image.")
@@ -37,8 +36,9 @@ object EcrPlugin extends AutoPlugin {
     },
     login := {
       implicit val logger = streams.value.log
+      val accountId = Sts.accountId(region.value)
       val (user, pass) = Ecr.dockerCredentials(region.value)
-      val cmd = List("docker", "login", "-u", user, "-p", pass, "-e", "none", s"https://${Ecr.domain(region.value, accountId.value)}")
+      val cmd = List("docker", "login", "-u", user, "-p", pass, "-e", "none", s"https://${Ecr.domain(region.value, accountId)}")
       Process(cmd)! match {
         case 0 =>
         case _ =>
@@ -48,8 +48,10 @@ object EcrPlugin extends AutoPlugin {
     push := {
       implicit val logger = streams.value.log
 
+      val accountId = Sts.accountId(region.value)
+
       val src = localDockerImage.value
-      val dst = s"${Ecr.domain(region.value, accountId.value)}/${repositoryName.value}"
+      val dst = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}"
 
       val tag = List("docker", "tag", src, dst)
       Process(tag)! match {
