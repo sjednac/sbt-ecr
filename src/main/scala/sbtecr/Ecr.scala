@@ -9,7 +9,7 @@ import sbt.Logger
 
 import scala.collection.JavaConverters._
 
-object Ecr extends Aws {
+private[sbtecr] object Ecr extends Aws {
 
   def domain(region: Region, accountId: String) = s"${accountId}.dkr.ecr.${region}.amazonaws.com"
 

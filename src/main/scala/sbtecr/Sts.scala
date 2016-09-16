@@ -5,7 +5,7 @@ import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClient
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityRequest
 import sbt.Logger
 
-object Sts extends Aws {
+private[sbtecr] object Sts extends Aws {
 
   def accountId(region: Region)(implicit logger: Logger): String = {
     val request = new GetCallerIdentityRequest()
