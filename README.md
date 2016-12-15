@@ -12,7 +12,7 @@ An [SBT](http://www.scala-sbt.org/) plugin for managing [Docker](http://docker.i
 
 Add the following to your `project/plugins.sbt` file:
 
-    resolvers += Resolver.url("bintray-sbilinski", url("http://dl.bintray.com/sbilinski/maven"))(Resolver.ivyStylePatterns)
+    resolvers += Resolver.url("bintray-sbilinski", url("http://dl.bintray.com/sbilinski/sbt-plugins"))(Resolver.ivyStylePatterns)
 
     addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.2.0")
 
