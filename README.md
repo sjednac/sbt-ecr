@@ -12,8 +12,6 @@ An [SBT](http://www.scala-sbt.org/) plugin for managing [Docker](http://docker.i
 
 Add the following to your `project/plugins.sbt` file:
 
-    resolvers += Resolver.url("bintray-sbilinski", url("http://dl.bintray.com/sbilinski/sbt-plugins"))(Resolver.ivyStylePatterns)
-
     addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.3.0")
 
 Add ECR settings to your `build.sbt`. The following snippet assumes a Docker image build using [sbt-native-packager](https://github.com/sbt/sbt-native-packager):
