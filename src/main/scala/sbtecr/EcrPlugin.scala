@@ -20,8 +20,6 @@ object EcrPlugin extends AutoPlugin {
       lazy val push             = taskKey[Unit]("Push a Docker image to Amazon ECR.")
   }
 
-  override def trigger = allRequirements
-
   import autoImport._
   override lazy val projectSettings = inConfig(ecr)(defaultSettings ++ tasks)
 
