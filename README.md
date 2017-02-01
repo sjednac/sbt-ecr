@@ -24,3 +24,4 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
 
     //Run `docker:publishLocal` before `ecr:push`
     push in ecr <<= (push in ecr) dependsOn (publishLocal in Docker)
+    enablePlugins(EcrPlugin)
