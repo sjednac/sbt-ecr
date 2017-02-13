@@ -7,6 +7,8 @@ import sbt._
 import scala.language.postfixOps
 
 object EcrPlugin extends AutoPlugin {
+  
+  lazy val version:SettingKey[String] = settingKey[String]("The ECR docker image version.")
 
   object autoImport {
       lazy val ecr = config("ecr")
@@ -24,7 +26,8 @@ object EcrPlugin extends AutoPlugin {
   override lazy val projectSettings = inConfig(ecr)(defaultSettings ++ tasks)
 
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
-    localDockerImage := s"${repositoryName.value}:latest"
+    version := "latest",
+    localDockerImage := s"${repositoryName.value}:${version.value}"
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
@@ -49,7 +52,7 @@ object EcrPlugin extends AutoPlugin {
       val accountId = Sts.accountId(region.value)
 
       val src = localDockerImage.value
-      val dst = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}"
+      val dst = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}:${version.value}"
 
       val tag = List("docker", "tag", src, dst)
       Process(tag)! match {
