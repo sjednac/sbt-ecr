@@ -25,6 +25,7 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
     region           in ecr := Region.getRegion(Regions.US_EAST_1)
     repositoryName   in ecr := (packageName in Docker).value
     localDockerImage in ecr := (packageName in Docker).value + ":" + (version in Docker).value
+    version in ecr := (version in Docker).value
 
     // Create the repository before authentication takes place (optional)
     login in ecr <<= (login in ecr) dependsOn (createRepository in ecr)
