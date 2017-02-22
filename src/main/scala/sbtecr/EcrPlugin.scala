@@ -2,13 +2,12 @@ package sbtecr
 
 import com.amazonaws.regions.Region
 import sbt.Keys._
+import sbt.Keys.version
 import sbt._
 
 import scala.language.postfixOps
 
 object EcrPlugin extends AutoPlugin {
-  
-  lazy val version:SettingKey[String] = settingKey[String]("The ECR docker image version.")
 
   object autoImport {
       lazy val ecr = config("ecr")
