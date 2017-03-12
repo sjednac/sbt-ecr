@@ -2,6 +2,7 @@ package sbtecr
 
 import com.amazonaws.regions.Region
 import sbt.Keys._
+import sbt.Keys.version
 import sbt._
 
 import scala.language.postfixOps
@@ -24,7 +25,8 @@ object EcrPlugin extends AutoPlugin {
   override lazy val projectSettings = inConfig(ecr)(defaultSettings ++ tasks)
 
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
-    localDockerImage := s"${repositoryName.value}:latest"
+    version := "latest",
+    localDockerImage := s"${repositoryName.value}:${version.value}"
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
@@ -49,7 +51,7 @@ object EcrPlugin extends AutoPlugin {
       val accountId = Sts.accountId(region.value)
 
       val src = localDockerImage.value
-      val dst = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}"
+      val dst = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}:${version.value}"
 
       val tag = List("docker", "tag", src, dst)
       Process(tag)! match {
