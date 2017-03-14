@@ -33,3 +33,7 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
     // Authenticate and publish a local Docker image before pushing to ECR
     push in ecr <<= (push in ecr) dependsOn (publishLocal in Docker, login in ecr)
 
+It is possible to provide arbitrary additional tags for an image pushed to amazon ECR, for example to set "latest" tag to the image
+    
+    additionalTags   in ecr := Seq("latest")
+
