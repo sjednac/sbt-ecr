@@ -16,5 +16,5 @@ private[sbtecr] object Sts extends Aws {
     response.getAccount
   }
 
-  private def sts(region: Region) = client(classOf[AWSSecurityTokenServiceClient], region)
+  private def sts(region: Region)(implicit logger: Logger) = client(classOf[AWSSecurityTokenServiceClient], region)
 }

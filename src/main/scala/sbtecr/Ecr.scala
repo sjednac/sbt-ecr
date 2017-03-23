@@ -45,5 +45,5 @@ private[sbtecr] object Ecr extends Aws {
       }
   }
 
-  private def ecr(region: Region) = client(classOf[AmazonECRClient], region)
+  private def ecr(region: Region)(implicit logger: Logger) = client(classOf[AmazonECRClient], region)
 }
