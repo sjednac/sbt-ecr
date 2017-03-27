@@ -15,7 +15,7 @@ object EcrPlugin extends AutoPlugin {
       lazy val region           = settingKey[Region]("Amazon EC2 region.")
       lazy val repositoryName   = settingKey[String]("Amazon ECR repository name.")
       lazy val localDockerImage = settingKey[String]("Local Docker image.")
-      lazy val additionalTags   = settingKey[Seq[String]]("Additional tags")
+      lazy val repositoryTags   = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository")
 
       lazy val createRepository = taskKey[Unit]("Create a repository in Amazon ECR.")
       lazy val login            = taskKey[Unit]("Login to Amazon ECR.")
@@ -26,8 +26,7 @@ object EcrPlugin extends AutoPlugin {
   override lazy val projectSettings = inConfig(ecr)(defaultSettings ++ tasks)
 
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
-    version := "latest",
-    additionalTags := Seq(),
+    repositoryTags := List("latest"),
     localDockerImage := s"${repositoryName.value}:${version.value}"
   )
 
@@ -55,9 +54,7 @@ object EcrPlugin extends AutoPlugin {
       val src = localDockerImage.value
       def destination(tag: String) = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}:$tag"
 
-      val tags = Seq(version.value) ++ additionalTags.value
-
-      tags.foreach { tag =>
+      repositoryTags.value.foreach { tag =>
         val dst = destination(tag)
         val command = List("docker", "tag", src, dst)
         Process(command) ! match {
