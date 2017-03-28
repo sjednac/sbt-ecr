@@ -2,7 +2,6 @@ package sbtecr
 
 import com.amazonaws.regions.Region
 import sbt.Keys._
-import sbt.Keys.version
 import sbt._
 
 import scala.language.postfixOps
