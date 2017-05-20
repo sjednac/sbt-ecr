@@ -2,7 +2,6 @@ package sbtecr
 
 import com.amazonaws.regions.Region
 import sbt.Keys._
-import sbt.Keys.version
 import sbt._
 
 import scala.language.postfixOps
@@ -15,6 +14,7 @@ object EcrPlugin extends AutoPlugin {
       lazy val region           = settingKey[Region]("Amazon EC2 region.")
       lazy val repositoryName   = settingKey[String]("Amazon ECR repository name.")
       lazy val localDockerImage = settingKey[String]("Local Docker image.")
+      lazy val repositoryTags   = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository")
 
       lazy val createRepository = taskKey[Unit]("Create a repository in Amazon ECR.")
       lazy val login            = taskKey[Unit]("Login to Amazon ECR.")
@@ -25,7 +25,7 @@ object EcrPlugin extends AutoPlugin {
   override lazy val projectSettings = inConfig(ecr)(defaultSettings ++ tasks)
 
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
-    version := "latest",
+    repositoryTags := List("latest"),
     localDockerImage := s"${repositoryName.value}:${version.value}"
   )
 
@@ -51,19 +51,22 @@ object EcrPlugin extends AutoPlugin {
       val accountId = Sts.accountId(region.value)
 
       val src = localDockerImage.value
-      val dst = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}:${version.value}"
+      def destination(tag: String) = s"${Ecr.domain(region.value, accountId)}/${repositoryName.value}:$tag"
 
-      val tag = List("docker", "tag", src, dst)
-      Process(tag)! match {
-        case 0 =>
-          val push = List("docker", "push", dst)
-          Process(push)! match {
-            case 0 =>
-            case _ =>
-              sys.error(s"Pushing failed. Command: ${push.mkString(" ")}")
-          }
-        case _ =>
-          sys.error(s"Tagging failed. Command: ${tag.mkString(" ")}")
+      repositoryTags.value.foreach { tag =>
+        val dst = destination(tag)
+        val command = List("docker", "tag", src, dst)
+        Process(command) ! match {
+          case 0 =>
+            val push = List("docker", "push", dst)
+            Process(push) ! match {
+              case 0 =>
+              case _ =>
+                sys.error(s"Pushing failed. Command: ${push.mkString(" ")}")
+            }
+          case _ =>
+            sys.error(s"Tagging failed. Command: ${command.mkString(" ")}")
+        }
       }
     }
   )
