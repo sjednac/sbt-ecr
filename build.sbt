@@ -12,7 +12,8 @@ libraryDependencies ++= {
   val amazonSdkV = "1.11.33"
   val scalaTestV = "3.0.0"
   Seq(
-    "com.amazonaws"  %  "aws-java-sdk"   % amazonSdkV,
+    "com.amazonaws"  %  "aws-java-sdk-sts"   % amazonSdkV,
+    "com.amazonaws"  %  "aws-java-sdk-ecr"   % amazonSdkV,
     "org.scalatest"  %% "scalatest"      % scalaTestV % "test"
   )
 }
