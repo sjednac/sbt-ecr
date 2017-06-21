@@ -38,7 +38,7 @@ object EcrPlugin extends AutoPlugin {
       implicit val logger = streams.value.log
       val accountId = Sts.accountId(region.value)
       val (user, pass) = Ecr.dockerCredentials(region.value)
-      val cmd = List("docker", "login", "-u", user, "-p", pass, "-e", "none", s"https://${Ecr.domain(region.value, accountId)}")
+      val cmd = List("docker", "login", "-u", user, "-p", pass, s"https://${Ecr.domain(region.value, accountId)}")
       Process(cmd)! match {
         case 0 =>
         case _ =>
