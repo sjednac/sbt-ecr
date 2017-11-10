@@ -11,7 +11,7 @@ import scala.collection.JavaConverters._
 
 private[sbtecr] object Ecr extends Aws {
 
-  def domain(region: Region, accountId: String) = s"${accountId}.dkr.ecr.${region}.amazonaws.com"
+  def domain(region: Region, accountId: String) = s"${accountId}.dkr.ecr.${region}.${region.getDomain}"
 
   def createRepository(region: Region, repositoryName: String)(implicit logger: Logger): Unit = {
     val request = new CreateRepositoryRequest()
