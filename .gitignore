@@ -37,3 +37,6 @@ hs_err_pid*
 ### Intellij ###
 .idea_modules/
 .idea/
+
+### Temporary files ###
+tmp/
