@@ -14,7 +14,7 @@ An [SBT](http://www.scala-sbt.org/) plugin for managing [Docker](http://docker.i
 
 Add the following to your `project/plugins.sbt` file:
 
-    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.7.1")
+    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.8.0")
 
 Add ECR settings to your `build.sbt`. The following snippet assumes a Docker image build using [sbt-native-packager](https://github.com/sbt/sbt-native-packager):
 
@@ -22,24 +22,24 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
     
     enablePlugins(EcrPlugin)
 
-    region           in ecr := Region.getRegion(Regions.US_EAST_1)
-    repositoryName   in ecr := (packageName in Docker).value
-    localDockerImage in ecr := (packageName in Docker).value + ":" + (version in Docker).value
+    region           in Ecr := Region.getRegion(Regions.US_EAST_1)
+    repositoryName   in Ecr := (packageName in Docker).value
+    localDockerImage in Ecr := (packageName in Docker).value + ":" + (version in Docker).value
 
     // Create the repository before authentication takes place (optional)
-    login in ecr <<= (login in ecr) dependsOn (createRepository in ecr)
+    login in Ecr := ((login in Ecr) dependsOn (createRepository in Ecr)).value
 
     // Authenticate and publish a local Docker image before pushing to ECR
-    push in ecr <<= (push in ecr) dependsOn (publishLocal in Docker, login in ecr)
+    push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
 
 ## Tagging
 
 By default, the produced image will be tagged as "latest". It is possible to provide arbitrary additional tags,
  for example to add the version tag to the image:
     
-    repositoryTags in ecr ++= Seq(version.value)
+    repositoryTags in Ecr ++= Seq(version.value)
     
 If you don't want latest tag on your image you could override the ```repositoryTags``` value completely:
  
-    repositoryTags in ecr := Seq(version.value)
+    repositoryTags in Ecr := Seq(version.value)
 

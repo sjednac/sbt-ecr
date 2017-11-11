@@ -5,4 +5,18 @@ bintrayVcsUrl        := Some("git@github.com:sbilinski/sbt-ecr.git")
 publishMavenStyle       := false
 publishArtifact in Test := false
 
-publish <<= publish dependsOn (test in Test)
+// Release
+import ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  releaseStepCommandAndRemaining("^ test"),
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  releaseStepCommandAndRemaining("^ publish"),
+  setNextVersion,
+  commitNextVersion
+)
