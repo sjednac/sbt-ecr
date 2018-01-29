@@ -43,7 +43,7 @@ object EcrPlugin extends AutoPlugin {
       exec(cmd) match {
         case 0 =>
         case _ =>
-          sys.error(s"Login failed. Command: ${cmd.mkString(" ")}")
+          sys.error(s"Login failed. Command: $cmd")
       }
     },
     push := {
