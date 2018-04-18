@@ -3,7 +3,7 @@ package sbtecr
 import java.util.Base64
 
 import com.amazonaws.regions.Region
-import com.amazonaws.services.ecr.AmazonECRClient
+import com.amazonaws.services.ecr.AmazonECRClientBuilder
 import com.amazonaws.services.ecr.model._
 import sbt.Logger
 
@@ -45,5 +45,10 @@ private[sbtecr] object AwsEcr extends Aws {
       }
   }
 
-  private def ecr(region: Region) = client(classOf[AmazonECRClient], region)
+  private def ecr(region: Region) = {
+    AmazonECRClientBuilder.standard()
+                          .withRegion(region.getName())
+                          .withCredentials(credentialsProvider())
+                          .build()
+  }
 }

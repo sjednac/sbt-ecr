@@ -1,7 +1,7 @@
 package sbtecr
 
 import com.amazonaws.regions.Region
-import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClient
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityRequest
 import sbt.Logger
 
@@ -16,5 +16,10 @@ private[sbtecr] object AwsSts extends Aws {
     response.getAccount
   }
 
-  private def sts(region: Region) = client(classOf[AWSSecurityTokenServiceClient], region)
+  private def sts(region: Region) = {
+    AWSSecurityTokenServiceClientBuilder.standard()
+                                        .withRegion(region.getName())
+                                        .withCredentials(credentialsProvider())
+                                        .build()
+  }
 }
