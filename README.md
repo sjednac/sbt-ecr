@@ -43,3 +43,11 @@ If you don't want latest tag on your image you could override the ```repositoryT
  
     repositoryTags in Ecr := Seq(version.value)
 
+If you want to make the tag environment-dependent you can use the following template:
+
+    repositoryTags in Ecr := sys.env.get("VERSION_TAG").map(Seq(_)).getOrElse(Seq("latest"))
+
+And trigger the process using:
+
+    VERSION_TAG=myfeature sbt ecr:push
+
