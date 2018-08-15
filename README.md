@@ -6,48 +6,31 @@ An [SBT](http://www.scala-sbt.org/) plugin for managing [Docker](http://docker.i
 
 ## Features
 
-* Create ECR repositories using `ecr:createRepository`
-* Login to the remote registry using `ecr:login`
-* Push local images using `ecr:push`
+Enable the use of the [sbt-native-packager DockerPlugin](https://www.scala-sbt.org/sbt-native-packager/formats/docker.html) with [Amazon ECR](https://aws.amazon.com/ecr/).
+
+Prerequisites
+-------------
+
+The plugin assumes that [sbt-native-packager](https://github.com/sbt/sbt-native-packager) has been included in your SBT build configuration.    
+This can be done by adding the plugin following instructions at http://www.scala-sbt.org/sbt-native-packager/ or by adding
+another plugin that includes and initializes it (e.g. the SBT plugin for Play 2.6.x).
 
 ## Installation
 
 Add the following to your `project/plugins.sbt` file:
 
-    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.10.0")
+    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.11.0")
 
-Add ECR settings to your `build.sbt`. The following snippet assumes a Docker image build using [sbt-native-packager](https://github.com/sbt/sbt-native-packager):
+Add `sbt-ecr` settings to your `build.sbt`:   
 
-    import com.amazonaws.regions.{Region, Regions}
+    import com.amazonaws.regions.Regions
     
     enablePlugins(EcrPlugin)
 
-    region           in Ecr := Region.getRegion(Regions.US_EAST_1)
-    repositoryName   in Ecr := (packageName in Docker).value
-    localDockerImage in Ecr := (packageName in Docker).value + ":" + (version in Docker).value
-
-    // Create the repository before authentication takes place (optional)
-    login in Ecr := ((login in Ecr) dependsOn (createRepository in Ecr)).value
-
-    // Authenticate and publish a local Docker image before pushing to ECR
-    push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
-
-## Tagging
-
-By default, the produced image will be tagged as "latest". It is possible to provide arbitrary additional tags,
- for example to add the version tag to the image:
+    Ecr / region := Regions.US_EAST_1
     
-    repositoryTags in Ecr ++= Seq(version.value)
-    
-If you don't want latest tag on your image you could override the ```repositoryTags``` value completely:
- 
-    repositoryTags in Ecr := Seq(version.value)
+That's all ! :tada:
 
-If you want to make the tag environment-dependent you can use the following template:
+:warning: This plugins will set the `Docker / dockerRepository` value for you, so you **SHOULD NOT** set it in your `build.sbt`.
 
-    repositoryTags in Ecr := sys.env.get("VERSION_TAG").map(Seq(_)).getOrElse(Seq("latest"))
-
-And trigger the process using:
-
-    VERSION_TAG=myfeature sbt ecr:push
-
+Now you can use the normal workflow of the [sbt-native-packager DockerPlugin](https://www.scala-sbt.org/sbt-native-packager/formats/docker.html).

@@ -3,7 +3,7 @@ package sbtecr
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 
-private[sbtecr] trait Aws {
+private[sbtecr] object Aws {
 
   def credentialsProvider(): AWSCredentialsProvider =
     new AWSCredentialsProviderChain(
@@ -12,4 +12,5 @@ private[sbtecr] trait Aws {
       new ProfileCredentialsProvider(sys.env.getOrElse("AWS_DEFAULT_PROFILE", "default")),
       new EC2ContainerCredentialsProviderWrapper()
     )
+
 }

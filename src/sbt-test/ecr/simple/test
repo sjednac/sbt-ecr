@@ -1,4 +1,4 @@
 # ECR settings must be handled properly
 > show ecr:region
-> show ecr:repositoryName
-> show ecr:localDockerImage
+> docker:publishLocal
+$ exists target/docker/stage/Dockerfile
