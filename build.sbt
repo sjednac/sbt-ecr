@@ -6,7 +6,7 @@ startYear     := Some(2016)
 licenses      += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 sbtVersion in Global := "1.0.3"
-crossSbtVersions     := List("0.13.16", "1.1.4")
+crossSbtVersions     := List("0.13.17", "1.1.4")
 scalaVersion         := "2.12.6"
 scalacOptions        := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 
