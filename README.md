@@ -51,3 +51,37 @@ And trigger the process using:
 
     VERSION_TAG=myfeature sbt ecr:push
 
+## Repository policy configuration
+
+By default, when the `createRepository` task is executed, the new repository does not have a policy
+attached. 
+
+When you set `repositoryPolicyText` in your `build.sbt` file, and the `createRepository` is called, the created
+repository will have the configured policy. 
+
+Example usage:
+    
+    repositoryPolicyText in Ecr := Some(IO.read(file("project") / "ecrpolicy.json")) 
+    
+Then in the `project/ecrpolicy.json` you can set your policy text. For example:
+    
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "BuildServerAccess",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": [
+              "arn:aws:iam::YOUR_ACCOUNT_ID_HERE:role/YOUR_IAM_ROLE_NAME_HERE"
+            ]
+          },
+          "Action": [
+            "ecr:*"
+          ]
+        }
+      ]
+    }
+ 
+Configuring `repositoryPolicyText` will not affect existing repositories.
+
