@@ -18,6 +18,7 @@ object EcrPlugin extends AutoPlugin {
       lazy val localDockerImage     = settingKey[String]("Local Docker image.")
       lazy val repositoryTags       = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
 
+      lazy val repositoryDomain     = taskKey[String]("Domain of the Amazon ECR repository.")
       lazy val createRepository     = taskKey[Unit]("Create a repository in Amazon ECR.")
       lazy val login                = taskKey[Unit]("Login to Amazon ECR.")
       lazy val push                 = taskKey[Unit]("Push a Docker image to Amazon ECR.")
@@ -33,15 +34,19 @@ object EcrPlugin extends AutoPlugin {
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
+    repositoryDomain := {
+      implicit val logger = streams.value.log
+      val accountId = AwsSts.accountId(region.value)
+      AwsEcr.domain(region.value, accountId)
+    },
     createRepository := {
       implicit val logger = streams.value.log
       AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value)
     },
     login := {
       implicit val logger = streams.value.log
-      val accountId = AwsSts.accountId(region.value)
       val (user, pass) = AwsEcr.dockerCredentials(region.value)
-      val cmd = s"docker login -u ${user} -p ${pass} https://${AwsEcr.domain(region.value, accountId)}"
+      val cmd = s"docker login -u ${user} -p ${pass} https://${repositoryDomain.value}"
       exec(cmd) match {
         case 0 =>
         case _ =>
@@ -51,10 +56,8 @@ object EcrPlugin extends AutoPlugin {
     push := {
       implicit val logger = streams.value.log
 
-      val accountId = AwsSts.accountId(region.value)
-
       val src = localDockerImage.value
-      def destination(tag: String) = s"${AwsEcr.domain(region.value, accountId)}/${repositoryName.value}:$tag"
+      def destination(tag: String) = s"${repositoryDomain.value}/${repositoryName.value}:$tag"
 
       repositoryTags.value.foreach { tag =>
         val dst = destination(tag)
