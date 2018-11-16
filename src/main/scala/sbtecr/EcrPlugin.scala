@@ -12,16 +12,17 @@ object EcrPlugin extends AutoPlugin {
   object autoImport {
       lazy val Ecr = config("ecr")
 
-      lazy val region               = settingKey[Region]("Amazon EC2 region.")
-      lazy val repositoryName       = settingKey[String]("Amazon ECR repository name.")
-      lazy val repositoryPolicyText = settingKey[Option[String]]("Amazon ECR policy.")
-      lazy val localDockerImage     = settingKey[String]("Local Docker image.")
-      lazy val repositoryTags       = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
+      lazy val region                         = settingKey[Region]("Amazon EC2 region.")
+      lazy val repositoryName                 = settingKey[String]("Amazon ECR repository name.")
+      lazy val repositoryPolicyText           = settingKey[Option[String]]("Amazon ECR access policy.")
+      lazy val repositoryLifecyclePolicyText  = settingKey[Option[String]]("Amazon ECR lifecycle policy.")
+      lazy val localDockerImage               = settingKey[String]("Local Docker image.")
+      lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
 
-      lazy val repositoryDomain     = taskKey[String]("Domain of the Amazon ECR repository.")
-      lazy val createRepository     = taskKey[Unit]("Create a repository in Amazon ECR.")
-      lazy val login                = taskKey[Unit]("Login to Amazon ECR.")
-      lazy val push                 = taskKey[Unit]("Push a Docker image to Amazon ECR.")
+      lazy val repositoryDomain               = taskKey[String]("Domain of the Amazon ECR repository.")
+      lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
+      lazy val login                          = taskKey[Unit]("Login to Amazon ECR.")
+      lazy val push                           = taskKey[Unit]("Push a Docker image to Amazon ECR.")
   }
 
   import autoImport._
@@ -41,7 +42,7 @@ object EcrPlugin extends AutoPlugin {
     },
     createRepository := {
       implicit val logger = streams.value.log
-      AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value)
+      AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value, repositoryLifecyclePolicyText.value)
     },
     login := {
       implicit val logger = streams.value.log

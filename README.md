@@ -14,7 +14,7 @@ An [SBT](http://www.scala-sbt.org/) plugin for managing [Docker](http://docker.i
 
 Add the following to your `project/plugins.sbt` file:
 
-    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.13.0")
+    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.14.0")
 
 Add ECR settings to your `build.sbt`. The following snippet assumes a Docker image build using [sbt-native-packager](https://github.com/sbt/sbt-native-packager):
 
@@ -84,4 +84,42 @@ Then in the `project/ecrpolicy.json` you can set your policy text. For example:
     }
  
 Configuring `repositoryPolicyText` will not affect existing repositories.
+
+## Repository lifecycle policy configuration
+Configuring the repository lifecycle policy works the same as configuring the policy in the previous chapter.
+
+By default, when the `createRepository` task is executed, the new repository does not have a lifecycle 
+policy attached. 
+
+When you set `repositoryLifecyclePolicyText` in your `build.sbt` file, and the `createRepository` is called, the created
+repository will have the configured lifecycle policy. 
+
+Example usage:
+    
+    repositoryLifecyclePolicyText in Ecr := Some(IO.read(file("project") / "ecrlifecyclepolicy.json")) 
+    
+Then in the `project/ecrlifecyclepolicy.json` you can set your policy text. For example:
+    
+    {
+      "rules": [
+        {
+          "rulePriority": 10,
+          "description": "Lifecycle of release branch images",
+          "selection": {
+            "tagStatus": "tagged",
+            "tagPrefixList": [
+              "release"
+            ],
+            "countType": "imageCountMoreThan",
+            "countNumber": 20
+          },
+          "action": {
+            "type": "expire"
+          }
+        }
+      ]
+    }
+ 
+Configuring `repositoryLifecyclePolicyText` will not affect existing repositories.
+
 
