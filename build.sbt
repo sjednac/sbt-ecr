@@ -16,7 +16,7 @@ scalaCompilerBridgeSource := {
 }
 
 libraryDependencies ++= {
-  val amazonSdkV = "1.11.418"
+  val amazonSdkV = "1.11.458"
   val scalaTestV = "3.0.5"
   Seq(
     "com.amazonaws"  %  "aws-java-sdk-sts"   % amazonSdkV,
