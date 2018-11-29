@@ -33,7 +33,7 @@ private[sbtecr] object AwsEcr extends Aws {
     }
   }
 
-  private def setPolicy(ecr : AmazonECR, repositoryName : String, repositoryPolicyText : String)(implicit logger: Logger): Unit = {
+  private def setPolicy(ecr: AmazonECR, repositoryName: String, repositoryPolicyText: String)(implicit logger: Logger): Unit = {
     val request = new SetRepositoryPolicyRequest()
         .withRepositoryName(repositoryName)
         .withPolicyText(repositoryPolicyText)
@@ -41,7 +41,7 @@ private[sbtecr] object AwsEcr extends Aws {
     logger.info("Configured policy for ECR repository.")
   }
 
-  private def putLifecyclePolicy(ecr : AmazonECR, repositoryName : String, lifecyclePolicyText : String)(implicit logger : Logger) : Unit = {
+  private def putLifecyclePolicy(ecr: AmazonECR, repositoryName: String, lifecyclePolicyText: String)(implicit logger: Logger): Unit = {
     val request = new PutLifecyclePolicyRequest()
         .withRepositoryName(repositoryName)
         .withLifecyclePolicyText(lifecyclePolicyText)

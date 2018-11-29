@@ -86,6 +86,7 @@ Then in the `project/ecrpolicy.json` you can set your policy text. For example:
 Configuring `repositoryPolicyText` will not affect existing repositories.
 
 ## Repository lifecycle policy configuration
+
 Configuring the repository lifecycle policy works the same as configuring the policy in the previous chapter.
 
 By default, when the `createRepository` task is executed, the new repository does not have a lifecycle 
