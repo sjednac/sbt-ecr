@@ -13,7 +13,10 @@ private[sbtecr] object AwsEcr extends Aws {
 
   def domain(region: Region, accountId: String) = s"${accountId}.dkr.ecr.${region}.${region.getDomain}"
 
-  def createRepository(region: Region, repositoryName: String, repositoryPolicyText: Option[String])(implicit logger: Logger): Unit = {
+  def createRepository(region: Region,
+                       repositoryName: String,
+                       repositoryPolicyText: Option[String],
+                       repositoryLifecyclePolicyText : Option[String])(implicit logger: Logger): Unit = {
     val client = ecr(region)
     val request = new CreateRepositoryRequest()
     request.setRepositoryName(repositoryName)
@@ -22,6 +25,8 @@ private[sbtecr] object AwsEcr extends Aws {
       val result = client.createRepository(request)
       logger.info(s"Repository created in ${region}: arn=${result.getRepository.getRepositoryArn}")
       repositoryPolicyText.foreach(setPolicy(client, repositoryName, _))
+      repositoryLifecyclePolicyText.foreach(putLifecyclePolicy(client, repositoryName, _))
+
     } catch {
       case e: RepositoryAlreadyExistsException =>
         logger.info(s"Repository exists: ${region}/${repositoryName}")
@@ -34,6 +39,14 @@ private[sbtecr] object AwsEcr extends Aws {
         .withPolicyText(repositoryPolicyText)
     ecr.setRepositoryPolicy(request)
     logger.info("Configured policy for ECR repository.")
+  }
+
+  private def putLifecyclePolicy(ecr : AmazonECR, repositoryName : String, lifecyclePolicyText : String)(implicit logger : Logger) : Unit = {
+    val request = new PutLifecyclePolicyRequest()
+        .withRepositoryName(repositoryName)
+        .withLifecyclePolicyText(lifecyclePolicyText)
+    ecr.putLifecyclePolicy(request)
+    logger.info("Configured lifecycle policy for ECR repository.")
   }
 
   def dockerCredentials(region: Region)(implicit logger: Logger): (String, String) = {
