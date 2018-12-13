@@ -14,7 +14,7 @@ An [SBT](http://www.scala-sbt.org/) plugin for managing [Docker](http://docker.i
 
 Add the following to your `project/plugins.sbt` file:
 
-    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.14.0")
+    addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.14.1")
 
 Add ECR settings to your `build.sbt`. The following snippet assumes a Docker image build using [sbt-native-packager](https://github.com/sbt/sbt-native-packager):
 
