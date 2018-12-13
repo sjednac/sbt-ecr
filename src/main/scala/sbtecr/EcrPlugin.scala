@@ -31,6 +31,7 @@ object EcrPlugin extends AutoPlugin {
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
     repositoryTags := List("latest"),
     repositoryPolicyText := None,
+    repositoryLifecyclePolicyText := None,
     localDockerImage := s"${repositoryName.value}:${version.value}"
   )
 
