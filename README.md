@@ -32,13 +32,13 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
     // Authenticate and publish a local Docker image before pushing to ECR
     push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
     
-## Profiles
+## Usage
 
-Configure AWS profile e.g. according to [documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html).
+The plugin [follows](https://github.com/sbilinski/sbt-ecr/blob/master/src/main/scala/sbtecr/Aws.scala) standard AWS conventions in terms of security and authentication. That is, you can use [environment variables](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EnvironmentVariableCredentialsProvider.html), an [EC2 instance profile](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EC2ContainerCredentialsProviderWrapper.html) or a "local" profile from `~/.aws/credentials` to authenticate your publishing process. 
 
-Then start sbt with an environment variable like this:
+To make it work **locally**, you may configure an AWS profile according to the [reference page](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) and spawn the `push` process as such:
 
-    AWS_DEFAULT_PROFILE="<your_profile_name>" sbt
+    AWS_DEFAULT_PROFILE="<your_profile_name>" sbt ecr:push
 
 ## Tagging
 
