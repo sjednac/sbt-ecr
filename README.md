@@ -31,6 +31,14 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
 
     // Authenticate and publish a local Docker image before pushing to ECR
     push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
+    
+## Profiles
+
+Configure AWS profile e.g. according to [documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html).
+
+Then start sbt with an environment variable like this:
+
+    AWS_DEFAULT_PROFILE="<your_profile_name>" sbt
 
 ## Tagging
 
