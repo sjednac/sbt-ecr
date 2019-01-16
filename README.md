@@ -32,6 +32,10 @@ Add ECR settings to your `build.sbt`. The following snippet assumes a Docker ima
     // Authenticate and publish a local Docker image before pushing to ECR
     push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
     
+Keep in mind that `ecr:createRepository` is a completely optional step. If you have a [managed infrastructure](https://en.wikipedia.org/wiki/Infrastructure_as_code) (e.g. create everything, including the repository, using [AWS CloudFormation](https://aws.amazon.com/cloudformation/), [Terraform](https://www.terraform.io/) or some other tool), then it might be better to skip this step, and assume that the repository exist, when you trigger the process.
+
+That being said, it's a convenient feature, when you don't rely on any tool like this. For this reason, we support several "policy" related extensions, that can save you some time in the long run (read ahead).
+
 ## Usage
 
 The plugin [follows](https://github.com/sbilinski/sbt-ecr/blob/master/src/main/scala/sbtecr/Aws.scala) standard AWS conventions in terms of security and authentication. That is, you can use [environment variables](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EnvironmentVariableCredentialsProvider.html), an [EC2 instance profile](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EC2ContainerCredentialsProviderWrapper.html) or a "local" profile from `~/.aws/credentials` to authenticate your publishing process. 
