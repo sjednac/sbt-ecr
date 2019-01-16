@@ -51,9 +51,9 @@ And trigger the process using:
 
     VERSION_TAG=myfeature sbt ecr:push
 
-## Repository policy configuration
+## Repository security policy configuration
 
-By default, when the `createRepository` task is executed, the new repository does not have a policy
+By default, when the `createRepository` task is executed, the new repository does not have a **security policy**
 attached. 
 
 When you set `repositoryPolicyText` in your `build.sbt` file, and the `createRepository` is called, the created
@@ -89,8 +89,8 @@ Configuring `repositoryPolicyText` will not affect existing repositories.
 
 Configuring the repository lifecycle policy works the same as configuring the policy in the previous chapter.
 
-By default, when the `createRepository` task is executed, the new repository does not have a lifecycle 
-policy attached. 
+By default, when the `createRepository` task is executed, the new repository does not have a **lifecycle 
+policy** attached. 
 
 When you set `repositoryLifecyclePolicyText` in your `build.sbt` file, and the `createRepository` is called, the created
 repository will have the configured lifecycle policy. 
