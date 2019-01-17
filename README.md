@@ -42,7 +42,7 @@ The plugin [follows](https://github.com/sbilinski/sbt-ecr/blob/master/src/main/s
 conventions. That is, you can use the following **authentication** methods:
 
 * provide `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY` as [environment variables](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EnvironmentVariableCredentialsProvider.html).
-* provide `aws.accessKeyId`and `aws.secretKey` as [system properties](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/SystemPropertiesCredentialsProvider.html).
+* provide `aws.accessKeyId` and `aws.secretKey` as [system properties](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/SystemPropertiesCredentialsProvider.html).
 * use a [profile](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/profile/ProfileCredentialsProvider.html) specified by the `AWS_DEFAULT_PROFILE` environment variable.
 * use the [EC2 instance profile](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EC2ContainerCredentialsProviderWrapper.html) when the process is run directly in [Amazon EC2](https://aws.amazon.com/ec2/).
 
