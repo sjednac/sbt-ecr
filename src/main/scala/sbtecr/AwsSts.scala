@@ -7,11 +7,9 @@ import sbt.Logger
 
 private[sbtecr] object AwsSts extends Aws {
 
-  def accountId(region: Region)(implicit logger: Logger): String = {
+  def accountId(region: Region): String = {
     val request = new GetCallerIdentityRequest()
     val response = sts(region).getCallerIdentity(request)
-
-    logger.info(s"AWS account id: ${response.getAccount}")
 
     response.getAccount
   }

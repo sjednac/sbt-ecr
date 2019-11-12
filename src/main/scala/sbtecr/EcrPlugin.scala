@@ -19,8 +19,8 @@ object EcrPlugin extends AutoPlugin {
       lazy val localDockerImage               = settingKey[String]("Local Docker image.")
       lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
       lazy val registryIds                    = settingKey[Seq[String]]("AWS account IDs that correspond to the Amazon ECR registries.")
+      lazy val repositoryDomain               = settingKey[String]("Domain of the Amazon ECR repository.")
 
-      lazy val repositoryDomain               = taskKey[String]("Domain of the Amazon ECR repository.")
       lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
       lazy val login                          = taskKey[Unit]("Login to Amazon ECR.")
       lazy val push                           = taskKey[Unit]("Push a Docker image to Amazon ECR.")
@@ -34,15 +34,14 @@ object EcrPlugin extends AutoPlugin {
     registryIds := Nil,
     repositoryPolicyText := None,
     repositoryLifecyclePolicyText := None,
-    localDockerImage := s"${repositoryName.value}:${version.value}"
+    localDockerImage := s"${repositoryName.value}:${version.value}",
+    repositoryDomain := {
+      val accountId = AwsSts.accountId(region.value)
+      AwsEcr.domain(region.value, accountId)
+    }
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
-    repositoryDomain := {
-      implicit val logger = streams.value.log
-      val accountId = AwsSts.accountId(region.value)
-      AwsEcr.domain(region.value, accountId)
-    },
     createRepository := {
       implicit val logger = streams.value.log
       AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value, repositoryLifecyclePolicyText.value)
