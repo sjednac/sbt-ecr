@@ -18,6 +18,7 @@ object EcrPlugin extends AutoPlugin {
       lazy val repositoryLifecyclePolicyText  = settingKey[Option[String]]("Amazon ECR lifecycle policy.")
       lazy val localDockerImage               = settingKey[String]("Local Docker image.")
       lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
+      lazy val registryIds                    = settingKey[Seq[String]]("AWS account IDs that correspond to the Amazon ECR registries.")
 
       lazy val repositoryDomain               = taskKey[String]("Domain of the Amazon ECR repository.")
       lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
@@ -30,6 +31,7 @@ object EcrPlugin extends AutoPlugin {
 
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
     repositoryTags := List("latest"),
+    registryIds := Nil,
     repositoryPolicyText := None,
     repositoryLifecyclePolicyText := None,
     localDockerImage := s"${repositoryName.value}:${version.value}"
@@ -47,7 +49,7 @@ object EcrPlugin extends AutoPlugin {
     },
     login := {
       implicit val logger = streams.value.log
-      val (user, pass) = AwsEcr.dockerCredentials(region.value)
+      val (user, pass) = AwsEcr.dockerCredentials(region.value, registryIds.value)
       val cmd = s"docker login -u ${user} -p ${pass} https://${repositoryDomain.value}"
       exec(cmd) match {
         case 0 =>
