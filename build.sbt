@@ -6,8 +6,7 @@ startYear     := Some(2016)
 licenses      += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 sbtVersion in Global := "1.0.3"
-crossSbtVersions     := List("0.13.17", "1.1.4")
-scalaVersion         := "2.12.7"
+crossSbtVersions     := List("0.13.18", "1.1.4")
 scalacOptions        := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 
 scalaCompilerBridgeSource := {
@@ -16,8 +15,8 @@ scalaCompilerBridgeSource := {
 }
 
 libraryDependencies ++= {
-  val amazonSdkV = "1.11.458"
-  val scalaTestV = "3.0.5"
+  val amazonSdkV = "1.11.672"
+  val scalaTestV = "3.0.8"
   Seq(
     "com.amazonaws"  %  "aws-java-sdk-sts"   % amazonSdkV,
     "com.amazonaws"  %  "aws-java-sdk-ecr"   % amazonSdkV,
