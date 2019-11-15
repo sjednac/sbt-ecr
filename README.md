@@ -69,16 +69,15 @@ And trigger the process using:
 
     VERSION_TAG=myfeature sbt ecr:push
 
-## Cross account
+## Cross account publishing
 
-By default, When the login task is executed, authentication will target the **registry id** 
-and **repository domain** of the AWS account belonging to the role used.
+By default, when the `login` task is executed, authentication will target the **registry id** and **repository domain** of the AWS account belonging to the role used.
 
-If you need cross account authentication, 
-you can override registry domain and target any registry id.
+If you need cross account authentication, you can override registry domain and target any registry id.
 
 Example usage:
-    repositoryDomain in Ecr := "your ecr repository domain"
+
+    repositoryDomain in Ecr := "myecr.example.com"
     registryIds in Ecr ++= Seq("your AWS account id")
 
 ## Repository security policy configuration
