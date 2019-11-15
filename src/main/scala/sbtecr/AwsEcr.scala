@@ -49,7 +49,7 @@ private[sbtecr] object AwsEcr extends Aws {
     logger.info("Configured lifecycle policy for ECR repository.")
   }
 
-  def dockerCredentials(region: Region, registryIds: Seq[String])(implicit logger: Logger): (String, String) = {
+  def dockerCredentials(region: Region, registryIds: Seq[String] = Seq.empty)(implicit logger: Logger): (String, String) = {
     val request =
       if (registryIds.nonEmpty) new GetAuthorizationTokenRequest().withRegistryIds(registryIds.asJavaCollection)
       else new GetAuthorizationTokenRequest()
