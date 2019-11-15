@@ -36,6 +36,7 @@ object EcrPlugin extends AutoPlugin {
     repositoryLifecyclePolicyText := None,
     localDockerImage := s"${repositoryName.value}:${version.value}",
     repositoryDomain := {
+      implicit val logger = streams.value.log
       val accountId = AwsSts.accountId(region.value)
       AwsEcr.domain(region.value, accountId)
     }
