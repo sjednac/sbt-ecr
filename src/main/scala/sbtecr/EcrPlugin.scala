@@ -18,8 +18,9 @@ object EcrPlugin extends AutoPlugin {
       lazy val repositoryLifecyclePolicyText  = settingKey[Option[String]]("Amazon ECR lifecycle policy.")
       lazy val localDockerImage               = settingKey[String]("Local Docker image.")
       lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
+      lazy val registryIds                    = settingKey[Seq[String]]("AWS account IDs that correspond to the Amazon ECR registries.")
+      lazy val repositoryDomain               = settingKey[String]("Domain of the Amazon ECR repository.")
 
-      lazy val repositoryDomain               = taskKey[String]("Domain of the Amazon ECR repository.")
       lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
       lazy val login                          = taskKey[Unit]("Login to Amazon ECR.")
       lazy val push                           = taskKey[Unit]("Push a Docker image to Amazon ECR.")
@@ -30,24 +31,25 @@ object EcrPlugin extends AutoPlugin {
 
   lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
     repositoryTags := List("latest"),
+    registryIds := Nil,
     repositoryPolicyText := None,
     repositoryLifecyclePolicyText := None,
-    localDockerImage := s"${repositoryName.value}:${version.value}"
-  )
-
-  lazy val tasks: Seq[Def.Setting[_]] = Seq(
+    localDockerImage := s"${repositoryName.value}:${version.value}",
     repositoryDomain := {
       implicit val logger = streams.value.log
       val accountId = AwsSts.accountId(region.value)
       AwsEcr.domain(region.value, accountId)
-    },
+    }
+  )
+
+  lazy val tasks: Seq[Def.Setting[_]] = Seq(
     createRepository := {
       implicit val logger = streams.value.log
       AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value, repositoryLifecyclePolicyText.value)
     },
     login := {
       implicit val logger = streams.value.log
-      val (user, pass) = AwsEcr.dockerCredentials(region.value)
+      val (user, pass) = AwsEcr.dockerCredentials(region.value, registryIds.value)
       val cmd = s"docker login -u ${user} -p ${pass} https://${repositoryDomain.value}"
       exec(cmd) match {
         case 0 =>
