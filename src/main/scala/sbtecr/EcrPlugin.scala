@@ -13,14 +13,15 @@ object EcrPlugin extends AutoPlugin {
       lazy val Ecr = config("ecr")
 
       lazy val region                         = settingKey[Region]("Amazon EC2 region.")
+      lazy val registryIds                    = settingKey[Seq[String]]("AWS account IDs that correspond to the Amazon ECR registries.")
       lazy val repositoryName                 = settingKey[String]("Amazon ECR repository name.")
+      lazy val repositoryDomain               = settingKey[Option[String]]("Overwrites Amazon ECR domain.")
       lazy val repositoryPolicyText           = settingKey[Option[String]]("Amazon ECR access policy.")
       lazy val repositoryLifecyclePolicyText  = settingKey[Option[String]]("Amazon ECR lifecycle policy.")
       lazy val localDockerImage               = settingKey[String]("Local Docker image.")
       lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
-      lazy val registryIds                    = settingKey[Seq[String]]("AWS account IDs that correspond to the Amazon ECR registries.")
-      lazy val repositoryDomain               = settingKey[String]("Domain of the Amazon ECR repository.")
 
+      lazy val fetchDomain                    = taskKey[String]("Fetch active domain for Amazon ECR access.")
       lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
       lazy val login                          = taskKey[Unit]("Login to Amazon ECR.")
       lazy val push                           = taskKey[Unit]("Push a Docker image to Amazon ECR.")
@@ -35,14 +36,21 @@ object EcrPlugin extends AutoPlugin {
     repositoryPolicyText := None,
     repositoryLifecyclePolicyText := None,
     localDockerImage := s"${repositoryName.value}:${version.value}",
-    repositoryDomain := {
-      implicit val logger = streams.value.log
-      val accountId = AwsSts.accountId(region.value)
-      AwsEcr.domain(region.value, accountId)
-    }
+    repositoryDomain := None
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
+    fetchDomain := {
+      implicit val logger = streams.value.log
+
+      val domain = repositoryDomain.value.getOrElse {
+        val accountId = AwsSts.accountId(region.value)
+        AwsEcr.domain(region.value, accountId)
+      }
+
+      logger.info(s"ECR domain: ${domain}")
+      domain
+    },
     createRepository := {
       implicit val logger = streams.value.log
       AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value, repositoryLifecyclePolicyText.value)
@@ -50,7 +58,8 @@ object EcrPlugin extends AutoPlugin {
     login := {
       implicit val logger = streams.value.log
       val (user, pass) = AwsEcr.dockerCredentials(region.value, registryIds.value)
-      val cmd = s"docker login -u ${user} -p ${pass} https://${repositoryDomain.value}"
+      val domain = fetchDomain.value
+      val cmd = s"docker login -u ${user} -p ${pass} https://${domain}"
       exec(cmd) match {
         case 0 =>
         case _ =>
@@ -61,7 +70,9 @@ object EcrPlugin extends AutoPlugin {
       implicit val logger = streams.value.log
 
       val src = localDockerImage.value
-      def destination(tag: String) = s"${repositoryDomain.value}/${repositoryName.value}:$tag"
+      val domain = fetchDomain.value
+
+      def destination(tag: String) = s"${domain}/${repositoryName.value}:$tag"
 
       repositoryTags.value.foreach { tag =>
         val dst = destination(tag)

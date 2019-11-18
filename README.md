@@ -77,7 +77,7 @@ If you need cross account authentication, you can override registry domain and t
 
 Example usage:
 
-    repositoryDomain in Ecr := "myecr.example.com"
+    repositoryDomain in Ecr := Some("myecr.example.com")
     registryIds in Ecr ++= Seq("your AWS account id")
 
 ## Repository security policy configuration
