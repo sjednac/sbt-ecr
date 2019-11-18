@@ -8,6 +8,10 @@ publishArtifact in Test := false
 // Release
 import ReleaseTransformations._
 
+releaseCrossBuild := true
+releaseVersionBump := sbtrelease.Version.Bump.Minor
+
+/*
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
@@ -19,4 +23,5 @@ releaseProcess := Seq[ReleaseStep](
   releaseStepCommandAndRemaining("^ publish"),
   setNextVersion,
   commitNextVersion
-)
+)*/
+
