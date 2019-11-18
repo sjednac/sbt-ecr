@@ -11,17 +11,3 @@ import ReleaseTransformations._
 releaseCrossBuild := true
 releaseVersionBump := sbtrelease.Version.Bump.Minor
 
-/*
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  runClean,
-  releaseStepCommandAndRemaining("^ test"),
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  releaseStepCommandAndRemaining("^ publish"),
-  setNextVersion,
-  commitNextVersion
-)*/
-
