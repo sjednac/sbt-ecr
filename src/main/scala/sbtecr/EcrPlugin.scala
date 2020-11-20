@@ -20,6 +20,7 @@ object EcrPlugin extends AutoPlugin {
       lazy val repositoryLifecyclePolicyText  = settingKey[Option[String]]("Amazon ECR lifecycle policy.")
       lazy val localDockerImage               = settingKey[String]("Local Docker image.")
       lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
+      lazy val imageTagsMutable               = settingKey[Boolean]("Boolean as to whether to make image tags mutable or not")
 
       lazy val fetchDomain                    = taskKey[String]("Fetch active domain for Amazon ECR access.")
       lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
@@ -36,7 +37,8 @@ object EcrPlugin extends AutoPlugin {
     repositoryPolicyText := None,
     repositoryLifecyclePolicyText := None,
     localDockerImage := s"${repositoryName.value}:${version.value}",
-    repositoryDomain := None
+    repositoryDomain := None,
+    imageTagsMutable := true
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
@@ -53,7 +55,7 @@ object EcrPlugin extends AutoPlugin {
     },
     createRepository := {
       implicit val logger = streams.value.log
-      AwsEcr.createRepository(region.value, repositoryName.value, repositoryPolicyText.value, repositoryLifecyclePolicyText.value)
+      AwsEcr.createRepository(region.value, repositoryName.value, imageTagsMutable.value, repositoryPolicyText.value, repositoryLifecyclePolicyText.value)
     },
     login := {
       implicit val logger = streams.value.log
