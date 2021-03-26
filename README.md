@@ -69,6 +69,13 @@ And trigger the process using:
 
     VERSION_TAG=myfeature sbt ecr:push
 
+## Tag immutability
+
+By default, when the `createRepository` task is executed, the new repository will have **Tag immutability**
+disabled. You can control this behavior using the following setting:
+
+    imageTagsMutable in Ecr := false
+ 
 ## Cross account publishing
 
 By default, when the `login` task is executed, authentication will target the **registry id** and **repository domain** of the AWS account belonging to the role used.
