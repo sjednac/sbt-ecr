@@ -1,6 +1,6 @@
 bintrayOrganization  := Some("sbilinski")
 bintrayRepository    := "sbt-plugins"
-bintrayVcsUrl        := Some("git@github.com:sbilinski/sbt-ecr.git")
+bintrayVcsUrl        := Some("git@github.com:sjednac/sbt-ecr.git")
 
 publishMavenStyle       := false
 publishArtifact in Test := false
