@@ -21,9 +21,11 @@ scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf
 libraryDependencies ++= {
   val amazonSdkV = "1.11.672"
   val scalaTestV = "3.0.8"
+  val awsSsoSdkV = "2.16.63"
   Seq(
-    "com.amazonaws"  %  "aws-java-sdk-sts"   % amazonSdkV,
-    "com.amazonaws"  %  "aws-java-sdk-ecr"   % amazonSdkV,
-    "org.scalatest"  %% "scalatest"      % scalaTestV % "test"
+    "com.amazonaws"          %  "aws-java-sdk-sts" % amazonSdkV,
+    "com.amazonaws"          %  "aws-java-sdk-ecr" % amazonSdkV,
+    "software.amazon.awssdk" %  "sso"              % awsSsoSdkV,
+    "org.scalatest"          %% "scalatest"        % scalaTestV % "test"
   )
 }
