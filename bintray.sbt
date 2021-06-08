@@ -2,8 +2,8 @@ bintrayOrganization  := Some("sbilinski")
 bintrayRepository    := "sbt-plugins"
 bintrayVcsUrl        := Some("git@github.com:sjednac/sbt-ecr.git")
 
-publishMavenStyle       := false
-publishArtifact in Test := false
+publishMavenStyle      := false
+Test / publishArtifact := false
 
 // Release
 import ReleaseTransformations._
