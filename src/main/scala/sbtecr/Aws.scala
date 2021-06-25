@@ -9,7 +9,7 @@ private[sbtecr] trait Aws {
     new AWSCredentialsProviderChain(
       new EnvironmentVariableCredentialsProvider(),
       new SystemPropertiesCredentialsProvider(),
-      new ProfileCredentialsProvider(sys.env.getOrElse("AWS_DEFAULT_PROFILE", "default")),
+      new ProfileCredentialsProvider(),
       new EC2ContainerCredentialsProviderWrapper()
     )
 }
