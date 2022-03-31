@@ -19,8 +19,8 @@ sbtVersion in pluginCrossBuild := {
 scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 
 libraryDependencies ++= {
-  val amazonSdkV = "1.11.672"
-  val scalaTestV = "3.0.8"
+  val amazonSdkV = "1.12.186"
+  val scalaTestV = "3.2.11"
   Seq(
     "com.amazonaws"  %  "aws-java-sdk-sts"   % amazonSdkV,
     "com.amazonaws"  %  "aws-java-sdk-ecr"   % amazonSdkV,
