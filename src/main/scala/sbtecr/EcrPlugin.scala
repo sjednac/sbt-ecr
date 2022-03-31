@@ -21,7 +21,7 @@ object EcrPlugin extends AutoPlugin {
       lazy val localDockerImage               = settingKey[String]("Local Docker image.")
       lazy val repositoryTags                 = settingKey[Seq[String]]("Tags managed in the Amazon ECR repository.")
       lazy val imageTagsMutable               = settingKey[Boolean]("Boolean as to whether to make image tags mutable or not")
-      lazy val scanOnPush                     = settingKey[Boolean]("Enable vunerabilities scan on image push")
+      lazy val scanOnPush                     = settingKey[Boolean]("Enable vulnerabilities scan on image push")
 
       lazy val fetchDomain                    = taskKey[String]("Fetch active domain for Amazon ECR access.")
       lazy val createRepository               = taskKey[Unit]("Create a repository in Amazon ECR.")
