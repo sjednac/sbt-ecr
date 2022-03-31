@@ -16,12 +16,19 @@ private[sbtecr] object AwsEcr extends Aws {
   def createRepository(region: Region,
                        repositoryName: String,
                        imageTagsMutable: Boolean,
+                       scanOnPush: Boolean,
                        repositoryPolicyText: Option[String],
                        repositoryLifecyclePolicyText: Option[String])(implicit logger: Logger): Unit = {
+
     val client = ecr(region)
 
     try {
-      val result = client.createRepository(new CreateRepositoryRequest().withRepositoryName(repositoryName).withImageTagMutability(if (imageTagsMutable) ImageTagMutability.MUTABLE else ImageTagMutability.IMMUTABLE))
+      val result = client.createRepository(
+        new CreateRepositoryRequest()
+          .withRepositoryName(repositoryName)
+          .withImageTagMutability(if (imageTagsMutable) ImageTagMutability.MUTABLE else ImageTagMutability.IMMUTABLE)
+          .withImageScanningConfiguration(new ImageScanningConfiguration().withScanOnPush(scanOnPush))
+      )
       logger.info(s"Repository created in ${region}: arn=${result.getRepository.getRepositoryArn}")
       repositoryPolicyText.foreach(setPolicy(client, repositoryName, _))
       repositoryLifecyclePolicyText.foreach(putLifecyclePolicy(client, repositoryName, _))

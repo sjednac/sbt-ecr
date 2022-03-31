@@ -75,6 +75,12 @@ By default, when the `createRepository` task is executed, the new repository wil
 disabled. You can control this behavior using the following setting:
 
     imageTagsMutable in Ecr := false
+
+## Image Scanning
+By default, when the `createRepository` task is executed, the new repository will have **Image Scanning**
+enabled. You can control this behavior using the following setting:
+
+    scanOnPush in Ecr := false
  
 ## Cross account publishing
 
