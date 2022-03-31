@@ -40,7 +40,7 @@ object EcrPlugin extends AutoPlugin {
     localDockerImage := s"${repositoryName.value}:${version.value}",
     repositoryDomain := None,
     imageTagsMutable := true,
-    scanOnPush       :=true,
+    scanOnPush       := true,
   )
 
   lazy val tasks: Seq[Def.Setting[_]] = Seq(
